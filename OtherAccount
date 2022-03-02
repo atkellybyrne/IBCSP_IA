@@ -1,0 +1,68 @@
+package sample;
+
+import javafx.geometry.Pos;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.GridPane;
+import javafx.stage.Stage;
+import java.util.ArrayList;
+import java.util.Collections;
+
+public class OtherAccount {
+
+    public OtherAccount(Stage otherAccntStage, Scene otherAccntScene, BorderPane otherAccntBorder, String profName, ArrayList userStr)
+    {
+// Creates a new stage and title
+        otherAccntStage.setScene(otherAccntScene);
+        otherAccntStage.setTitle("View Daily Progress" + " (" + profName + ")");
+
+// Creates two new GridPanes and adds them to the BorderPane
+        GridPane accntGrid = new GridPane();
+        GridPane topGrid = new GridPane();
+        topGrid.setHgap(10);
+        otherAccntBorder.setTop(topGrid);
+        accntGrid.setAlignment(Pos.CENTER);
+
+// Creates two new Buttons
+        Button goBack = new Button("Back to Main Menu");
+        Button accntBtn = new Button("Back to Other Account");
+
+// Adds the goBack button to the grid
+        topGrid.add(goBack,0,0);
+
+// Creates a scrollPane and adds it to the GridPane so the user can scroll
+// if the amount of users gets too large to fit on one screen
+        ScrollPane scroll = new ScrollPane(accntGrid);
+        otherAccntBorder.setCenter(scroll);
+
+// Automatically sorts out the ArrayList of users in alphabetical order
+        Collections.sort(userStr);
+
+// Adds a new Button for every item in the arrayList
+        for(int i=0; i<userStr.size();i++)
+        {
+            Button userBtn = new Button(userStr.get(i).toString());
+            accntGrid.add(userBtn,0,i);
+            int finalI = i;
+
+// Whenever the button is pressed, it will open an overloaded constructor for Graph
+// that displays the graph of the specific user for the button
+            userBtn.setOnAction(event ->
+            {
+                new Graph(otherAccntStage, otherAccntScene, otherAccntBorder, userStr.get(finalI).toString());
+                topGrid.add(accntBtn,1,0);
+                accntBtn.setOnAction(event1 ->
+                {
+                    new OtherAccount(otherAccntStage, otherAccntScene, otherAccntBorder, profName, userStr);
+                });
+            });
+        }
+// When goBack is pressed, it the MainMenu class will open a new stage for the menu
+        goBack.setOnAction(event ->
+        {
+            new MainMenu(otherAccntStage, profName, userStr);
+        });
+    }
+}

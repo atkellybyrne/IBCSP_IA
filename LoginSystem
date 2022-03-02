@@ -1,0 +1,246 @@
+package sample;
+
+import java.io.*;
+import java.util.ArrayList;
+import java.util.Scanner;
+import javafx.geometry.Pos;
+import javafx.scene.Scene;
+import javafx.scene.control.*;
+import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Text;
+import javafx.stage.Stage;
+
+public class LoginSystem {
+
+    private String currentUser;
+
+    public LoginSystem(Stage loginStage, String stageTitle) throws FileNotFoundException {
+
+// New BorderPanes that are the roots for all grids
+        BorderPane borderRoot = new BorderPane();
+        BorderPane loginRoot = new BorderPane();
+        BorderPane createAccountRoot = new BorderPane();
+
+// Creates a GridPane and makes the distance between the grid 10
+// Puts the grid inside the borderPane
+        GridPane rootGrid = new GridPane();
+        rootGrid.setHgap(10);
+        GridPane loginGrid = new GridPane();
+        loginGrid.setHgap(10);
+        loginGrid.setVgap(5);
+        GridPane createAccountGrid = new GridPane();
+        createAccountGrid.setHgap(10);
+        borderRoot.setCenter(rootGrid);
+        loginRoot.setCenter(loginGrid);
+        createAccountRoot.setCenter(createAccountGrid);
+
+// Makes the welcomeScene, the loginScene, and the createAccountScene
+        Scene welcomeScene = new Scene(borderRoot,400,400);
+        Scene loginScene = new Scene(loginRoot,450,400);
+        Scene createAccountScene = new Scene(createAccountRoot,600,400);
+
+// Sets the grid inside the center of the BorderPane
+        rootGrid.setAlignment(Pos.CENTER);
+
+// Makes both a "login" and a "Create account" button and adds both to the grid in the welcome scene
+        Button loginButton = new Button("Login");
+        Button createAccountButton = new Button("Create an Account");
+        rootGrid.add(loginButton,0,0);
+        rootGrid.add(createAccountButton,1,0);
+
+// Sets the scene the loginScene from the stage
+        loginStage.setScene(welcomeScene);
+        loginStage.setTitle("Login/Create Account");
+
+// Creates the labels, buttons, text fields, and password fields required for the login scene
+        Label loginUsername = new Label("Username");
+        Label loginPassword = new Label("Password");
+        Label notCorrect = new Label("");
+        notCorrect.setTextFill(Color.web("FF0000"));
+        TextField loginUsernameText = new TextField();
+        loginUsernameText.setPromptText("Username");
+        PasswordField loginPasswordField = new PasswordField();
+        loginPasswordField.setPromptText("Password");
+        Button loginLoginButton = new Button("Login");
+        Button loginBackButton = new Button("Back to Home");
+        Button createAccountBackButton = new Button("Back to Home");
+        Text createUsername = new Text();
+        Text createPassword = new Text();
+        Text username = new Text();
+        Text password = new Text();
+
+// Adds all the labels, buttons, text fields, and password fields required for the loginScene to the loginGrid
+        loginGrid.add(loginUsername,0,0,1,1);
+        loginGrid.add(loginPassword,1,0,1,1);
+        loginGrid.add(loginUsernameText,0,1,1,1);
+        loginGrid.add(loginPasswordField,1,1,1,1);
+        loginGrid.add(loginLoginButton,2,3,1,1);
+        loginGrid.add(loginBackButton,0,3,1,1);
+        loginGrid.add(notCorrect,0,4,1,1);
+
+
+// Creates the labels, buttons, text fields, and password fields required for the login scene
+        Label createAccountUsername = new Label("Username");
+        Label createAccountPassword = new Label("Password");
+        Label errorInCreateAccount = new Label("");
+        errorInCreateAccount.setTextFill(Color.web("FF0000"));
+        TextField createAccountUsernameText = new TextField();
+        createAccountUsernameText.setPromptText("Username");
+        PasswordField createAccountPasswordField = new PasswordField();
+        createAccountPasswordField.setPromptText("Password");
+        Button createAccountCreateButton = new Button("Create Account");
+
+// Adds the labels, button, text fields, and password fields required for the createAccountScene to the
+// createAccountGrid
+        createAccountGrid.add(createAccountUsername,0,0,1,1);
+        createAccountGrid.add(createAccountPassword,1,0,1,1);
+        createAccountGrid.add(createAccountUsernameText,0,1,1,1);
+        createAccountGrid.add(createAccountPasswordField,1,1,1,1);
+        createAccountGrid.add(createAccountCreateButton,2,3,1,1);
+        createAccountGrid.add(createAccountBackButton,0,3,1,1);
+        createAccountGrid.add(errorInCreateAccount,0,4,1,1);
+
+// Creates an arrayList for the username and password so they can be stored
+        ArrayList<String> userStr = new ArrayList<String>();
+        ArrayList<String> passStr = new ArrayList<String>();
+
+// If there is already something that is in either username.txt or password.txt, it will add it into userStr
+// or passStr respectfully
+        try{
+            Scanner userScanner = new Scanner(new File("username.txt"));
+            Scanner passScanner = new Scanner(new File("password.txt"));
+            while (userScanner.hasNext())
+            {
+                userStr.add(userScanner.next());
+                passStr.add(passScanner.next());
+            }
+        }catch (Exception e1){System.out.println("error in writing or reading into arraylist");}
+
+// When the createAccountButton is clicked...
+        createAccountButton.setOnAction(event ->
+        {
+// Changes the title of the stage to "Create Account" and changes the scene
+            loginStage.setTitle("Create Account");
+            loginStage.setScene(createAccountScene);
+
+            errorInCreateAccount.setTextFill(Color.web("000000"));
+
+// This is a button that should be clicked after inputting a username and password in both fields
+            createAccountCreateButton.setOnAction(e ->
+            {
+// Sets the text of the Text to whatever was inputted into the text fields
+                createUsername.setText(createAccountUsernameText.getText());
+                createPassword.setText(createAccountPasswordField.getText());
+
+// Changes the text to make it appear blank and back to the prompt text
+                createAccountUsernameText.setText("");
+                createAccountPasswordField.setText("");
+
+// If the username and or password contains a " " character a label will appear to re-enter the
+// password. If the arrayList already contains the username, then a label will appear to re-enter the
+// username by saying "This username has already been taken." If it makes it through those checks, then
+// the username and password will be added to the respective strings and .txt files.
+                if(createUsername.getText().contains(" ") || createPassword.getText().contains(" "))
+                {
+                    errorInCreateAccount.setText("Please re-enter the username and/or password");
+                }
+                else if(userStr.contains(createUsername.getText()))
+                {
+                    errorInCreateAccount.setText("This username has already been taken");
+                }
+                else {
+                    try {
+// Writes the username and password into their .txt files
+                        Writer uw = new FileWriter("username.txt", true);
+                        Writer pw = new FileWriter("password.txt", true);
+                        uw.write(createUsername.getText());
+                        uw.write("\n");
+                        pw.write(createPassword.getText());
+                        pw.write("\n");
+                        uw.close();
+                        pw.close();
+
+// Makes a scanner that puts whatever input from the .txt files into a separate arrayList
+                        Scanner userScanner = new Scanner(new File("username.txt"));
+                        Scanner passScanner = new Scanner(new File("password.txt"));
+                        while (userScanner.hasNext()) {
+                            userStr.add(userScanner.next());
+                        }
+                        while (passScanner.hasNext()) {
+                            passStr.add(passScanner.next());
+                        }
+
+                    } catch (Exception e1) {
+                        System.out.println("error in writing or reading into arraylist");
+                    }
+                    errorInCreateAccount.setTextFill(Color.web("000000"));
+                    errorInCreateAccount.setText("Account Successfully Created");
+                }
+            });
+
+// When you press the createAccountBackButton it changes the scene back to the welcomeScene
+            createAccountBackButton.setOnAction(e ->
+            {
+                loginStage.setScene(welcomeScene);
+                errorInCreateAccount.setText("");
+                loginStage.setTitle("Login/Create Account");
+            });
+        });
+
+// When the loginButton is clicked...
+        loginButton.setOnAction(e ->
+        {
+// It changes the title of the stage to "Login" and sets the scene to the loginScene
+            loginStage.setTitle("Login");
+            loginStage.setScene(loginScene);
+
+// When the loginLoginButton is clicked...
+            loginLoginButton.setOnAction(event ->
+            {
+// Sets the text of the Texts to whatever was inputted into the textFields
+                username.setText(loginUsernameText.getText());
+                password.setText(loginPasswordField.getText());
+
+// If the strings contain whatever was inputted into the textFields, and if the index from the
+// arrayLists match each other, it will bring you to the next stage, MenuStage, and hide the loginStage
+// it also sets the text from the notCorrect label to nothing so it looks invisible. If either of the
+// arrayLists do not contain whatever was inputted, notCorrect will display a message. It will also
+// allow for a new input to be made.
+                if(userStr.contains(username.getText()) && passStr.contains(password.getText()))
+                {
+                    if(userStr.indexOf(username) == passStr.indexOf(password)) {
+                        currentUser = username.getText();
+                        new MainMenu(loginStage, currentUser, userStr);
+                        notCorrect.setText("");
+                    }
+                }
+                else {
+                    notCorrect.setText("The username and/or login was incorrect");
+                }
+
+// Sets the text to blank and displays the prompt text
+                loginUsernameText.setText("");
+                loginPasswordField.setText("");
+
+// When the loginBackButton is pressed, it goes back the welcomeScene, it also makes notCorrect appear
+// invisible
+            });
+        });
+        loginBackButton.setOnAction(event1 ->
+        {
+            loginStage.setScene(welcomeScene);
+            notCorrect.setText("");
+            loginStage.setTitle("Login/Create Account");
+        });
+    }
+
+    public void setCurrentUser(String username) {
+        currentUser = username;
+    }
+
+    public String getCurrentUser() {
+        return currentUser;
+    }
+
+}

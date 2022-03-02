@@ -1,0 +1,26 @@
+package sample;
+
+import javafx.application.Application;
+import javafx.scene.Scene;
+import javafx.scene.layout.*;
+import javafx.stage.Stage;
+
+
+public class Main extends Application {
+
+    @Override
+    public void start(Stage primaryStage) throws Exception {
+
+// Sets the GridPane and Title
+        GridPane root = new GridPane();
+        primaryStage.setTitle("Login/Create Account");
+        Scene primaryScene = new Scene(root, 500, 500);
+        primaryStage.setScene(primaryScene);
+        primaryStage.show();
+
+// Uses the LoginSystem Class to open a new Stage
+        new LoginSystem(primaryStage, "Login/Create Account");
+
+    }
+
+}

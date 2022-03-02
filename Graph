@@ -1,0 +1,241 @@
+package sample;
+
+import javafx.scene.Scene;
+import javafx.scene.chart.*;
+import javafx.scene.control.Button;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.GridPane;
+import javafx.stage.Stage;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Scanner;
+
+public class Graph{
+
+    public Graph(Stage graphStage, Scene graphScene, BorderPane gBorder, String profName, ArrayList userStr)
+    {
+
+        graphStage.setScene(graphScene);
+        graphStage.setTitle("Graph" + " (" + profName + ")");
+
+        GridPane cGrid = new GridPane();
+        GridPane bGrid = new GridPane();
+        gBorder.setCenter(cGrid);
+        gBorder.setBottom(bGrid);
+
+        ArrayList<String> dateList = new ArrayList<String>();
+        ArrayList<String> weightList = new ArrayList<String>();
+        ArrayList<String> heightList = new ArrayList<String>();
+        ArrayList<String> calList = new ArrayList<String>();
+        ArrayList<String> exerciseList = new ArrayList<String>();
+
+
+        Button goBack = new Button("Back to Main Menu");
+
+        bGrid.add(goBack,0,0);
+
+
+
+
+        try {
+            Scanner sd = new Scanner(new File(profName + "Date.txt"));
+            Scanner sw = new Scanner(new File(profName + "Weight.txt"));
+            Scanner sh = new Scanner(new File(profName + "Height.txt"));
+            Scanner sc = new Scanner(new File(profName + "Calories.txt"));
+            Scanner se = new Scanner(new File(profName + "Exercise.txt"));
+
+            while (sd.hasNext()) {
+                dateList.add(sd.next());
+
+            }
+            while (sw.hasNext()) {
+                weightList.add(sw.next());
+            }
+            while (sh.hasNext()) {
+                heightList.add(sh.next());
+            }
+            while (sc.hasNext()) {
+                calList.add(sc.next());
+            }
+            while (se.hasNext()) {
+                exerciseList.add(se.next());
+            }
+
+        } catch (Exception e1) {
+            System.out.println("error in scanning from .txt file to arrayList");
+        }
+
+
+        final CategoryAxis xAxis1 = new CategoryAxis();
+        xAxis1.setLabel("Month");
+        final CategoryAxis xAxis2 = new CategoryAxis();
+        xAxis2.setLabel("Month");
+        final CategoryAxis xAxis3 = new CategoryAxis();
+        xAxis3.setLabel("Month");
+        final CategoryAxis xAxis4 = new CategoryAxis();
+        xAxis4.setLabel("Month");
+
+        Axis yAxis1 = new NumberAxis(0,300,5);
+        yAxis1.setLabel("Weight");
+        Axis yAxis2 = new NumberAxis(0,100,5);
+        yAxis2.setLabel("Height");
+        Axis yAxis3 = new NumberAxis(0,4000,100);
+        yAxis3.setLabel("Calories");
+        Axis yAxis4 = new NumberAxis(0,7,1);
+        yAxis4.setLabel("Exercise");
+
+
+        LineChart<String,Double> chart1 =
+                new LineChart<String,Double>(xAxis1,yAxis1);
+
+        LineChart<String,Double> chart2 =
+                new LineChart<String,Double>(xAxis2,yAxis2);
+        LineChart<String,Double> chart3 =
+                new LineChart<String,Double>(xAxis3,yAxis3);
+        LineChart<String,Double> chart4 =
+                new LineChart<String,Double>(xAxis4,yAxis4);
+
+
+
+        XYChart.Series wSeries = new XYChart.Series();
+        XYChart.Series hSeries = new XYChart.Series();
+        XYChart.Series cSeries = new XYChart.Series();
+        XYChart.Series eSeries = new XYChart.Series();
+
+
+        for(int i =0; i <dateList.size(); i++)
+        {
+            wSeries.getData().add(new XYChart.Data(dateList.get(i),Double.parseDouble(weightList.get(i))));
+            hSeries.getData().add(new XYChart.Data(dateList.get(i),Double.parseDouble(heightList.get(i))));
+            cSeries.getData().add(new XYChart.Data(dateList.get(i),Double.parseDouble(calList.get(i))));
+            eSeries.getData().add(new XYChart.Data(dateList.get(i),Double.parseDouble(exerciseList.get(i))));
+        }
+
+
+        chart1.getData().add(wSeries);
+        wSeries.setName("Date vs Weight");
+        chart2.getData().add(hSeries);
+        hSeries.setName("Date vs Height");
+        chart3.getData().add(cSeries);
+        cSeries.setName("Date vs Calories");
+        chart4.getData().add(eSeries);
+        eSeries.setName("Date vs Exercise");
+
+
+        cGrid.add(chart1,0,0);
+        cGrid.add(chart2,0,1);
+        cGrid.add(chart3,1,0);
+        cGrid.add(chart4,1,1);
+
+
+
+
+        goBack.setOnAction(event ->
+        {
+            new MainMenu(graphStage, profName, userStr);
+        });
+
+
+    }
+    public Graph(Stage graphStage, Scene graphScene, BorderPane gBorder, String profName) {
+
+        graphStage.setScene(graphScene);
+        graphStage.setTitle("Graph" + " (" + profName + ")");
+
+        GridPane cGrid = new GridPane();
+        GridPane bGrid = new GridPane();
+        gBorder.setCenter(cGrid);
+        gBorder.setBottom(bGrid);
+
+        ArrayList<String> dateList = new ArrayList<String>();
+        ArrayList<String> weightList = new ArrayList<String>();
+        ArrayList<String> heightList = new ArrayList<String>();
+        ArrayList<String> calList = new ArrayList<String>();
+        ArrayList<String> exerciseList = new ArrayList<String>();
+
+        try {
+            Scanner sd = new Scanner(new File(profName + "Date.txt"));
+            Scanner sw = new Scanner(new File(profName + "Weight.txt"));
+            Scanner sh = new Scanner(new File(profName + "Height.txt"));
+            Scanner sc = new Scanner(new File(profName + "Calories.txt"));
+            Scanner se = new Scanner(new File(profName + "Exercise.txt"));
+
+            while (sd.hasNext()) {
+                dateList.add(sd.next());
+
+            }
+            while (sw.hasNext()) {
+                weightList.add(sw.next());
+            }
+            while (sh.hasNext()) {
+                heightList.add(sh.next());
+            }
+            while (sc.hasNext()) {
+                calList.add(sc.next());
+            }
+            while (se.hasNext()) {
+                exerciseList.add(se.next());
+            }
+
+        } catch (Exception e1) {
+            System.out.println("error in scanning from .txt file to arrayList");
+        }
+
+
+        final CategoryAxis xAxis1 = new CategoryAxis();
+        xAxis1.setLabel("Month");
+        final CategoryAxis xAxis2 = new CategoryAxis();
+        xAxis2.setLabel("Month");
+        final CategoryAxis xAxis3 = new CategoryAxis();
+        xAxis3.setLabel("Month");
+        final CategoryAxis xAxis4 = new CategoryAxis();
+        xAxis4.setLabel("Month");
+
+        Axis yAxis1 = new NumberAxis(0,300,5);
+        yAxis1.setLabel("Height");
+        Axis yAxis2 = new NumberAxis(0,100,5);
+        yAxis2.setLabel("Weight");
+        Axis yAxis3 = new NumberAxis(0,4000,100);
+        yAxis3.setLabel("Calories");
+        Axis yAxis4 = new NumberAxis(0,7,1);
+        yAxis4.setLabel("Exercise");
+
+        LineChart<String,Double> chart1 =
+                new LineChart<String,Double>(xAxis1,yAxis1);
+        LineChart<String,Double> chart2 =
+                new LineChart<String,Double>(xAxis2,yAxis2);
+        LineChart<String,Double> chart3 =
+                new LineChart<String,Double>(xAxis3,yAxis3);
+        LineChart<String,Double> chart4 =
+                new LineChart<String,Double>(xAxis4,yAxis4);
+
+        XYChart.Series wSeries = new XYChart.Series();
+        XYChart.Series hSeries = new XYChart.Series();
+        XYChart.Series cSeries = new XYChart.Series();
+        XYChart.Series eSeries = new XYChart.Series();
+
+
+        for(int i =0; i <dateList.size(); i++)
+        {
+            wSeries.getData().add(new XYChart.Data(dateList.get(i),Double.parseDouble(weightList.get(i))));
+            hSeries.getData().add(new XYChart.Data(dateList.get(i),Double.parseDouble(heightList.get(i))));
+            cSeries.getData().add(new XYChart.Data(dateList.get(i),Double.parseDouble(calList.get(i))));
+            eSeries.getData().add(new XYChart.Data(dateList.get(i),Double.parseDouble(exerciseList.get(i))));
+        }
+
+        chart1.getData().add(wSeries);
+        wSeries.setName("Date vs Weight");
+        chart2.getData().add(hSeries);
+        hSeries.setName("Date vs Height");
+        chart3.getData().add(cSeries);
+        cSeries.setName("Date vs Calories");
+        chart4.getData().add(eSeries);
+        eSeries.setName("Date vs Exercise");
+
+        cGrid.add(chart1,0,0);
+        cGrid.add(chart2,0,1);
+        cGrid.add(chart3,1,0);
+        cGrid.add(chart4,1,1);
+    }
+}

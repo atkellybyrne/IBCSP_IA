@@ -1,5 +1,6 @@
 package sample;
 
+import com.sun.org.apache.xpath.internal.operations.Number;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -17,8 +18,6 @@ import java.text.ParseException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Scanner;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
 public class EnterInfo {
 
@@ -70,8 +69,9 @@ public class EnterInfo {
         infoGrid.add(submitInfo,0,6);
         infoGrid.add(goBack,1,6);
 
-        ArrayList<String> infoList = new ArrayList<String>();
+
         ArrayList<String> dateList = new ArrayList<String>();
+
 
         try {
             Scanner sd = new Scanner(new File(profName + "Date.txt"));
@@ -89,36 +89,34 @@ public class EnterInfo {
             LocalDate lastDate = null;
             LocalDate newDate = null;
 
-            if(dateList.isEmpty())
-            {
-
-                lastDate = java.time.LocalDate.now();
-            }
-
-            else
-            {
-                lastDate = LocalDate.parse(dateList.get(dateList.size() - 1));
-            }
-
+            lastDate = java.time.LocalDate.now();
             newDate = LocalDate.parse(String.valueOf(date.getValue()));
 
-
-
-
-            if(newDate.isBefore(lastDate))
+            if(newDate.isEqual(lastDate)==false)
             {
                 errorLabel.setVisible(true);
-                errorLabel.setText("Enter a date after " + lastDate);
+                errorLabel.setText("Enter today's date, " + lastDate);
             }
-
             else if(heightText.getText().equals("") || weightText.getText().equals("") ||
                     exerciseText.getText().equals("") ||caloriesText.getText().equals("") || date.getValue().equals(""))
             {
                 errorLabel.setVisible(true);
                 errorLabel.setText("Please enter in every field");
             }
+            else if(heightText.getText().equals("0") || weightText.getText().equals("0") ||
+                    exerciseText.getText().equals("0") ||caloriesText.getText().equals("0"))
+            {
+                errorLabel.setVisible(true);
+                errorLabel.setText("Item cannot be 0");
+            }
+            else if(isNumeric(heightText.getText()) == false || isNumeric(weightText.getText()) == false ||
+                    isNumeric(exerciseText.getText()) == false || isNumeric(caloriesText.getText()) == false)
+            {
+                errorLabel.setVisible(true);
+                errorLabel.setText("Please Enter a number");
+            }
 
-            else
+            else if(newDate.isEqual(lastDate))
             {
                 errorLabel.setVisible(false);
                 try {
@@ -152,29 +150,6 @@ public class EnterInfo {
                     wCalories.close();
                     wDate.close();
 
-
-                    Scanner sHeight = new Scanner(new File(profName+ "Height.txt"));
-                    Scanner sWeight = new Scanner(new File(profName+ "Weight.txt"));
-                    Scanner sExercise = new Scanner(new File(profName+ "Exercise.txt"));
-                    Scanner sCalories = new Scanner(new File(profName+ "Calories.txt"));
-                    Scanner sDate = new Scanner(new File(profName+ "Date.txt"));
-
-                    while (sHeight.hasNext()) {
-                        infoList.add(sHeight.next());
-                    }
-                    while (sWeight.hasNext()) {
-                        infoList.add(sWeight.next());
-                    }
-                    while (sExercise.hasNext()) {
-                        infoList.add(sExercise.next());
-                    }
-                    while (sCalories.hasNext()) {
-                        infoList.add(sCalories.next());
-                    }
-                    while (sDate.hasNext()) {
-                        infoList.add(sDate.next());
-                    }
-
                 } catch (Exception e1) {
                     System.out.println("error in writing or reading into arraylist");
                 }
@@ -193,5 +168,21 @@ public class EnterInfo {
             new MainMenu(infoStage, profName, userStr);
         });
 
+    }
+
+    // Was not created by me. I used and slightly altered someone else's code to check
+    // if values were integers. https://stackabuse.com/java-check-if-string-is-a-number/
+    public static boolean isNumeric(String string) {
+        double intValue;
+        if(string == null || string.equals("")) {
+            return false;
+        }
+        try {
+            intValue = Double.parseDouble(string);
+            return true;
+        } catch (NumberFormatException e) {
+            System.out.println("Input String cannot be parsed to Double");
+        }
+        return false;
     }
 }

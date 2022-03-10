@@ -1,6 +1,5 @@
 package sample;
 
-import com.sun.org.apache.xpath.internal.operations.Number;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -11,40 +10,47 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.scene.control.*;
-import java.io.File;
 import java.io.FileWriter;
 import java.io.Writer;
 import java.text.ParseException;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Scanner;
 
 public class EnterInfo {
 
     public EnterInfo(Stage infoStage, Scene infoScene, BorderPane infoBorder, String profName, ArrayList userStr) throws ParseException {
+
+        // Sets the scene from the infoStage, changes the title
         infoStage.setScene(infoScene);
         infoStage.setTitle("Enter Information"+ " (" + profName + ")");
 
+        // Creates a GridPane and changes the gaps in-between all nodes
         GridPane infoGrid = new GridPane();
         infoGrid.setHgap(5);
         infoGrid.setVgap(5);
 
+        // Creates two buttons
         Button goBack = new Button("Back to Main Menu");
         Button submitInfo = new Button("Enter Information");
 
+        // Creates labels which display what should be added
         Label heightLabel = new Label("Height");
         Label weightLabel = new Label("Weight");
         Label exerciseLabel = new Label("Amount of Exercise:");
         Label caloriesLabel = new Label("Calories:");
         Label dateLabel = new Label("Date:");
+
+        // When the user comes across an error, the label will be red
+        // and appear
         Label errorLabel = new Label("");
         errorLabel.setTextFill(Color.web("FF0000"));
         errorLabel.setVisible(false);
 
+        // Creates TextFields for the userto input their information
         TextField heightText = new TextField();
-        heightText.setPromptText("Enter Height (inches)");
+        heightText.setPromptText("Enter Height (in)");
         TextField weightText = new TextField();
-        weightText.setPromptText("Enter Weight (pounds)");
+        weightText.setPromptText("Enter Weight (lbs)");
         TextField exerciseText = new TextField();
         exerciseText.setPromptText("Enter Exercise (hrs)");
         TextField caloriesText = new TextField();
@@ -52,9 +58,12 @@ public class EnterInfo {
         DatePicker date = new DatePicker();
         date.setPromptText("Enter Date");
 
+        // Adds the GridPane infoGrid to the BorderPane and makes it
+        // appear at the top-left.
         infoBorder.setLeft(infoGrid);
         infoGrid.setAlignment(Pos.TOP_LEFT);
 
+        // Adds all items into the GridPane
         infoGrid.add(heightLabel,0,0);
         infoGrid.add(weightLabel,0,1);
         infoGrid.add(exerciseLabel,0,2);
@@ -69,56 +78,58 @@ public class EnterInfo {
         infoGrid.add(submitInfo,0,6);
         infoGrid.add(goBack,1,6);
 
-
-        ArrayList<String> dateList = new ArrayList<String>();
-
-
-        try {
-            Scanner sd = new Scanner(new File(profName + "Date.txt"));
-
-            while (sd.hasNext()) {
-                dateList.add(sd.next());
-            }
-        } catch (Exception e1) {
-            System.out.println("error in scanning from .txt file to arrayList");
-        }
-
+        // When the submitInfo button is pressed...
         submitInfo.setOnAction(event ->
         {
 
-            LocalDate lastDate = null;
-            LocalDate newDate = null;
+            // Makes a LocalDate object for the current date and
+            // the date that was just inputted
+            LocalDate lastDate = java.time.LocalDate.now();
+            LocalDate newDate = LocalDate.parse(String.valueOf(date.getValue()));
 
-            lastDate = java.time.LocalDate.now();
-            newDate = LocalDate.parse(String.valueOf(date.getValue()));
-
+            // If the date that was just inputted is not the same as the date today
+            // the user will not be able to input any additional information.
+            // The error message will appear
             if(newDate.isEqual(lastDate)==false)
             {
                 errorLabel.setVisible(true);
                 errorLabel.setText("Enter today's date, " + lastDate);
             }
+
+            // If any of the TextFields are empty, it will not input any additional
+            // information to a .txt file
             else if(heightText.getText().equals("") || weightText.getText().equals("") ||
                     exerciseText.getText().equals("") ||caloriesText.getText().equals("") || date.getValue().equals(""))
             {
                 errorLabel.setVisible(true);
                 errorLabel.setText("Please enter in every field");
             }
-            else if(heightText.getText().equals("0") || weightText.getText().equals("0") ||
-                    exerciseText.getText().equals("0") ||caloriesText.getText().equals("0"))
-            {
-                errorLabel.setVisible(true);
-                errorLabel.setText("Item cannot be 0");
-            }
-            else if(isNumeric(heightText.getText()) == false || isNumeric(weightText.getText()) == false ||
-                    isNumeric(exerciseText.getText()) == false || isNumeric(caloriesText.getText()) == false)
+
+            // Checks if any of the inputs can be a Double, if they are not, they will not be scanned into a
+            // .txt file
+            else if(isDouble(heightText.getText()) == false || isDouble(weightText.getText()) == false ||
+                    isDouble(exerciseText.getText()) == false || isDouble(caloriesText.getText()) == false)
             {
                 errorLabel.setVisible(true);
                 errorLabel.setText("Please Enter a number");
             }
 
-            else if(newDate.isEqual(lastDate))
+            // If any of the TextFields are less-than or equal to 0, they will not be scanned to a
+            // .txt file and the error message will appear
+            else if(Double.parseDouble(heightText.getText()) <= 0|| Double.parseDouble(weightText.getText()) <= 0 ||
+                    Double.parseDouble(exerciseText.getText()) <= 0 || Double.parseDouble(caloriesText.getText()) <= 0)
             {
+                errorLabel.setVisible(true);
+                errorLabel.setText("Item cannot be 0 or less than 0");
+            }
+
+            else
+            {
+                // Gets rid of the errorLabel
                 errorLabel.setVisible(false);
+
+                // Scans all items inputted into a seperate .txt file for each
+                // category
                 try {
                     Writer wHeight = new FileWriter(profName+ "Height.txt", true);
                     Writer wWeight = new FileWriter(profName+ "Weight.txt", true);
@@ -154,6 +165,7 @@ public class EnterInfo {
                     System.out.println("error in writing or reading into arraylist");
                 }
 
+                // Sets all the TextFields to nothing
                 heightText.setText("");
                 weightText.setText("");
                 exerciseText.setText("");
@@ -163,6 +175,8 @@ public class EnterInfo {
 
         });
 
+        // When the goBack button is pressed, the MainMenu class operates
+        // and changes the Stage from the infoStage
         goBack.setOnAction(event ->
         {
             new MainMenu(infoStage, profName, userStr);
@@ -172,7 +186,7 @@ public class EnterInfo {
 
     // Was not created by me. I used and slightly altered someone else's code to check
     // if values were integers. https://stackabuse.com/java-check-if-string-is-a-number/
-    public static boolean isNumeric(String string) {
+    public static boolean isDouble(String string) {
         double intValue;
         if(string == null || string.equals("")) {
             return false;

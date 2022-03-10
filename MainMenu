@@ -21,7 +21,7 @@ public class MainMenu {
 
     public MainMenu(Stage menuStage, String profName, ArrayList userStr) {
 
-// Creates a new Stage and sets the title to Main Menu (profName)
+        // Creates a new Stage and sets the title to Main Menu (profName)
         menuStage.setTitle("Main Menu (" + profName + ")");
         BorderPane menuBorder = new BorderPane();
         GridPane menuGrid = new GridPane();
@@ -29,15 +29,15 @@ public class MainMenu {
         menuGrid.setVgap(10);
         GridPane accountGrid = new GridPane();
 
-// Adds menuBorder to the scene and then sets menuScene to the stage
+        // Adds menuBorder to the scene and then sets menuScene to the stage
         Scene menuScene = new Scene(menuBorder, 600, 600);
         menuStage.setScene(menuScene);
 
-// Makes a new label for the account
+        // Makes a new label for the account
         Label accountName = new Label("Account: " + profName);
 
-// Makes new buttons for the MainMenu to carry out tasks; sets width
-// in-between them
+        // Makes new buttons for the MainMenu to carry out tasks; sets width
+        // in-between them
         Button logOut = new Button("Log out");
         Button enterNewInfo = new Button("Enter Daily Information");
         enterNewInfo.setMaxWidth(190);
@@ -48,27 +48,27 @@ public class MainMenu {
         Button viewGraph = new Button("Daily Graph");
         viewGraph.setMaxWidth(190);
 
-// Adds the grids to the BorderPane
+        // Adds the grids to the BorderPane
         menuBorder.setCenter(menuGrid);
         menuGrid.setAlignment(Pos.CENTER);
         menuBorder.setRight(accountGrid);
         accountGrid.setAlignment(Pos.TOP_RIGHT);
 
-// Adds the buttons to the grid for their respective places
+        // Adds the buttons to the grid for their respective places
         menuGrid.add(enterNewInfo,0,0,1,1);
         menuGrid.add(viewInfo,1,0,1,1);
         menuGrid.add(viewAccounts,0,1,1,1);
         menuGrid.add(viewGraph,1,1,1,1);
         menuBorder.setLeft(logOut);
 
-// Creates an arrayList for an image and adds an image to that arrayList
+        // Creates an arrayList for an image and adds an image to that arrayList
         ArrayList<String> imgList = new ArrayList<String>();
-        imgList.add("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQcU50X1UOeDaphmUyD6T8ROKs-HjeirpOoapiWbC9cL"+
-                "AqewFy1gthrgUTB9E7nKjRwOVk:https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-97346"+
+        imgList.add("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQcU50X1UOeDaphmUyD6T8ROKs-HjeirpOoapiWbC9cL" +
+                "AqewFy1gthrgUTB9E7nKjRwOVk:https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-97346" +
                 "0_1280.png&usqp=CAU");
 
-// Scans through the account-holder's Img.txt file, it adds whatever is in that file
-// to the end of the arrayList imgList, if there is nothing, it adds nothing
+        // Scans through the account-holder's Img.txt file, it adds whatever is in that file
+        // to the end of the arrayList imgList, if there is nothing, it adds nothing
         try {
             Scanner s = new Scanner(new File(profName+ "Img.txt"));
             while (s.hasNext()) {
@@ -79,36 +79,34 @@ public class MainMenu {
             System.out.println("error in creating an image");
         }
 
-// Creates an image out of the last
+        // Creates an image out of the last 
         ImageView imgView = new ImageView(imgList.get(imgList.size()-1));
 
-// Sets the height and width of the image and adds the image
-// to the grid
+        // Sets the height and width of the image and adds the image
+        // to the grid
         imgView.setPreserveRatio(true);
         imgView.setFitHeight(90);
         imgView.setFitWidth(90);
         accountGrid.add(imgView,0,0);
         accountGrid.add(accountName,0,1);
 
-// Creates a new BorderPane and a new Scene that will be used for the other classes
+        // Creates a new BorderPane and a new Scene that will be used for the other classes
         BorderPane newBorder = new BorderPane();
         Scene newScene = new Scene(newBorder,400,400);
 
-// When the image is clicked, a FileChooser is made that filters out all files that are
-// not img's, jps's, or gif's. It then creates an image from the path for the file and
-// sets imgView to the new image that is chosen
+        // When the image is clicked, a FileChooser is made that filters out all files that are
+        // not img's, jps's, or gif's. It then creates an image from the path for the file and
+        // sets imgView to the new image that is chosen
         imgView.setOnMouseClicked((MouseEvent e) ->
         {
             FileChooser imgFile = new FileChooser();
-            imgFile.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("Image Files",
-                    "*.png", "*.jpg", "*.gif"));
-            Image finalImage = new Image("file:" + imgFile.showOpenDialog(accountGrid.getScene().getWindow()).
-                    toString());
+            imgFile.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("Image Files", "*.png", "*.jpg", "*.gif"));
+            Image finalImage = new Image("file:" + imgFile.showOpenDialog(accountGrid.getScene().getWindow()).toString());
             imgView.setImage(finalImage);
 
-// Writes the URL from the image that is chosen to a text file for that acocunt's
-// image chosen. It then adds it to an ArrayList for the future. If there isn't a
-// new image it'll keep the original account image as the profile picture
+            // Writes the URL from the image that is chosen to a text file for that acocunt's
+            // image chosen. It then adds it to an ArrayList for the future. If there isn't a
+            // new image it'll keep the original account image as the profile picture
             try {
                 Writer w = new FileWriter(profName+ "Img.txt", true);
                 w.write("\n");
@@ -127,8 +125,8 @@ public class MainMenu {
             }
         });
 
-// When the logOut button is clicked a new stage will open to go to
-// the LoginSystem
+        // When the logOut button is clicked a new stage will open to go to
+        // the LoginSystem
         logOut.setOnAction(event ->
         {
             try {
@@ -138,7 +136,7 @@ public class MainMenu {
             }
         });
 
-// When the enterNewInfo button is clicked the EnterInfo class will open
+        // When the enterNewInfo button is clicked the EnterInfo class will open
         enterNewInfo.setOnAction(event ->
         {
             try {
@@ -148,19 +146,19 @@ public class MainMenu {
             }
         });
 
-// When the viewInfo button is clicked the ViewInfo class will open
+        // When the viewInfo button is clicked the ViewInfo class will open
         viewInfo.setOnAction(event ->
         {
             new ViewInfo(menuStage, newScene, newBorder, profName, userStr);
         });
 
-// When the viewGraph button is clicked the ViewGraph class will open
+        // When the viewGraph button is clicked the ViewGraph class will open
         viewGraph.setOnAction(event ->
         {
             new Graph(menuStage, newScene, newBorder, profName, userStr);
         });
 
-// When the viewAccounts button is clicked the OtherAccount class will open
+        // When the viewAccounts button is clicked the OtherAccount class will open
         viewAccounts.setOnAction(event ->
         {
             new OtherAccount(menuStage, newScene, newBorder, profName, userStr);

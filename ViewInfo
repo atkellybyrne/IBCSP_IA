@@ -7,32 +7,37 @@ import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
-import java.io.File;
+import java.io.*;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Scanner;
 
 public class ViewInfo {
 
     public ViewInfo(Stage viewInfoStage, Scene viewInfoScene, BorderPane viewInfoBorder, String profName, ArrayList userStr) {
 
+        // Sets the stage to the viewInfoStage and changes the title
         viewInfoStage.setScene(viewInfoScene);
         viewInfoStage.setTitle("View Daily Progress" + " (" + profName + ")");
         viewInfoStage.setMaxHeight(600);
         viewInfoStage.setMaxWidth(625);
 
-
+        // Creates a new BorderPane that will be where every other object
+        // goes into
         BorderPane border = new BorderPane();
+
+        // Makes GridPanes, a ScrollPane, and a BorderPane
         GridPane leftGrid = new GridPane();
-        ScrollPane scrollLeft = new ScrollPane(leftGrid);
         GridPane centerGrid = new GridPane();
         GridPane bottomGrid = new GridPane();
+        ScrollPane scrollLeft = new ScrollPane(leftGrid);
+        BorderPane centerBorder = new BorderPane();
 
-        Label weightLabel = new Label("Weight: ");
-        Label heightLabel = new Label("Height: ");
+        // Creates Labels that indicate what information is shown
+        Label weightLabel = new Label("Weight (lbs): ");
+        Label heightLabel = new Label("Height (in): ");
         Label calLabel = new Label("Calories: ");
-        Label exLabel = new Label("Exercise: ");
+        Label exLabel = new Label("Exercise (hours): ");
         Label BMILabel = new Label("BMI: ");
         Label weightText = new Label();
         Label heightText = new Label();
@@ -40,26 +45,30 @@ public class ViewInfo {
         Label exText = new Label();
         Label BMIText = new Label();
 
-
+        // Makes a button to go back to the main menu
         Button goBack = new Button("Back to Main Menu");
 
+        // Makes empty ArrayLists for the different information
         ArrayList<String> dateList = new ArrayList<String>();
         ArrayList<String> weightList = new ArrayList<String>();
         ArrayList<String> heightList = new ArrayList<String>();
         ArrayList<String> calList = new ArrayList<String>();
         ArrayList<String> exerciseList = new ArrayList<String>();
 
+        // Sets BorderPanes and puts GridPanes inside of them
+        // Sets the color background and border for the BorderPane
+        // centerBorder
         viewInfoBorder.setLeft(border);
         border.setLeft(scrollLeft);
         leftGrid.setAlignment(Pos.TOP_LEFT);
-
         viewInfoBorder.setBottom(bottomGrid);
-
-        viewInfoBorder.setCenter(centerGrid);
-        centerGrid.setBorder(new Border(new BorderStroke(Color.BLACK,
+        viewInfoBorder.setCenter(centerBorder);
+        centerBorder.setTop(centerGrid);
+        centerBorder.setBorder(new Border(new BorderStroke(Color.BLACK,
                 BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
-        centerGrid.setBackground(new Background(new BackgroundFill(Color.LIGHTGREY, CornerRadii.EMPTY, Insets.EMPTY)));
+        centerBorder.setBackground(new Background(new BackgroundFill(Color.LIGHTGREY, CornerRadii.EMPTY, Insets.EMPTY)));
 
+        // Sets the objects inside of the GridPane centerGrid
         centerGrid.add(weightLabel, 0, 0);
         centerGrid.add(weightText, 1, 0);
         centerGrid.add(heightLabel, 0, 1);
@@ -71,8 +80,11 @@ public class ViewInfo {
         centerGrid.add(BMILabel,0,4);
         centerGrid.add(BMIText,1,4);
 
+        // Adds the back button to the bottomGrid
         bottomGrid.add(goBack, 0, 0);
 
+        // Reads from the .txt files and puts into ArrayLists depending on what
+        // information is read
         try {
             Scanner sd = new Scanner(new File(profName + "Date.txt"));
             Scanner sw = new Scanner(new File(profName + "Weight.txt"));
@@ -100,30 +112,42 @@ public class ViewInfo {
             System.out.println("error in scanning from .txt file to arrayList");
         }
 
-
+        // Makes a DecimalFormat to limit the amount of decimal places used
         DecimalFormat decimal = new DecimalFormat("#.##");
 
+        // Creates listed information depending on the date
         for (int i = 0; i < dateList.size(); i++) {
+            // Makes buttons for each date that is inside of dateList
+            // then adds them to the grid in one column
             Button dateBtn = new Button(dateList.get(i));
             leftGrid.add(dateBtn, 0, i);
 
+            // Makes a temporary variable
             int finalI = i;
+
+            // When the dateBtn is clicked...
             dateBtn.setOnAction(event ->
             {
-
+                // Sets the text for the Labels to the index that the current date is at from
+                // the different ArrayLists (eg. weightList, heightList, etc.)
                 weightText.setText(weightList.get(finalI));
                 heightText.setText(heightList.get(finalI));
                 calText.setText(calList.get(finalI));
                 exText.setText(exerciseList.get(finalI));
+
+                // Gets the BMI and sets BMIText to that value with the proper decimal formatting
+                // Then gets the health using getHealth() to calculate the level of health
+                // the user is at at that date (eg. Underweight, Normal, Overweight, etc.)
                 BMI bmi = new BMI(Double.parseDouble(heightText.getText()),Double.parseDouble(weightText.getText()));
                 BMIText.setText((Double.parseDouble(decimal.format(bmi.getBMI()))) + " (" + bmi.getHealth() + ")");
 
             });
         }
+
+        // When the user clicks the goBack button, the MainMenu appears using the viewInfoStage
         goBack.setOnAction(event ->
         {
             new MainMenu(viewInfoStage, profName, userStr);
         });
     }
-
 }

@@ -1,5 +1,4 @@
 package sample;
-
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -144,10 +143,17 @@ public class LoginSystem {
                 if(createUsername.getText().contains(" ") || createPassword.getText().contains(" "))
                 {
                     errorInCreateAccount.setText("Please re-enter the username and/or password");
+                    errorInCreateAccount.setTextFill(Color.web("FF0000"));
+                }
+                else if(createUsername.getText().equals("") || createPassword.getText().equals(""))
+                {
+                    errorInCreateAccount.setText("Please re-enter the username and/or password");
+                    errorInCreateAccount.setTextFill(Color.web("FF0000"));
                 }
                 else if(userStr.contains(createUsername.getText()))
                 {
                     errorInCreateAccount.setText("This username has already been taken");
+                    errorInCreateAccount.setTextFill(Color.web("FF0000"));
                 }
                 else {
                     try {
@@ -164,7 +170,11 @@ public class LoginSystem {
 // Makes a scanner that puts whatever input from the .txt files into a separate arrayList
                         Scanner userScanner = new Scanner(new File("username.txt"));
                         Scanner passScanner = new Scanner(new File("password.txt"));
+                        userStr.clear();
+                        passStr.clear();
+
                         while (userScanner.hasNext()) {
+
                             userStr.add(userScanner.next());
                         }
                         while (passScanner.hasNext()) {
@@ -234,13 +244,4 @@ public class LoginSystem {
             loginStage.setTitle("Login/Create Account");
         });
     }
-
-    public void setCurrentUser(String username) {
-        currentUser = username;
-    }
-
-    public String getCurrentUser() {
-        return currentUser;
-    }
-
 }

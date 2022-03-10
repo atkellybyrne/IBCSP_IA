@@ -5,17 +5,24 @@ public class BMI {
     private double weight;
 
 
+    // Makes a BMI Object
     public BMI(double heights, double weights)
     {
         height = heights;
         weight = weights;
     }
 
+    // Returns the BMI of the user through a BMI formula in pounds
+    // and inches
     public double getBMI()
     {
         return (weight/(height*height)*703);
     }
 
+    // If the user's BMI is less than 18.5, they are underweight; if
+    // they are in-between 18.6 and 24.9 they are normal, it goes so
+    // on and so on until morbidly obese. It returns their health as
+    // a String
     public String getHealth()
     {
         String returned = "";
@@ -42,5 +49,4 @@ public class BMI {
         }
         return returned;
     }
-
 }

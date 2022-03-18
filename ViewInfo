@@ -19,8 +19,6 @@ public class ViewInfo {
         // Sets the stage to the viewInfoStage and changes the title
         viewInfoStage.setScene(viewInfoScene);
         viewInfoStage.setTitle("View Daily Progress" + " (" + profName + ")");
-        viewInfoStage.setMaxHeight(600);
-        viewInfoStage.setMaxWidth(625);
 
         // Creates a new BorderPane that will be where every other object
         // goes into
@@ -45,8 +43,9 @@ public class ViewInfo {
         Label exText = new Label();
         Label BMIText = new Label();
 
-        // Makes a button to go back to the main menu
+        // Makes a button to go back to the main menu and a delete button
         Button goBack = new Button("Back to Main Menu");
+        Button delete = new Button("Delete");
 
         // Makes empty ArrayLists for the different information
         ArrayList<String> dateList = new ArrayList<String>();
@@ -81,7 +80,9 @@ public class ViewInfo {
         centerGrid.add(BMIText,1,4);
 
         // Adds the back button to the bottomGrid
+        bottomGrid.setHgap(100);
         bottomGrid.add(goBack, 0, 0);
+        bottomGrid.add(delete,1,0);
 
         // Reads from the .txt files and puts into ArrayLists depending on what
         // information is read
@@ -117,6 +118,7 @@ public class ViewInfo {
 
         // Creates listed information depending on the date
         for (int i = 0; i < dateList.size(); i++) {
+
             // Makes buttons for each date that is inside of dateList
             // then adds them to the grid in one column
             Button dateBtn = new Button(dateList.get(i));
@@ -124,6 +126,61 @@ public class ViewInfo {
 
             // Makes a temporary variable
             int finalI = i;
+
+            delete.setOnAction(event ->
+            {
+                heightList.remove(heightText.getText());
+                weightList.remove(weightText.getText());
+                exerciseList.remove(exText.getText());
+                calList.remove(calText.getText());
+                dateList.remove(dateBtn.getText());
+
+                try {
+                    Writer wHeight = new FileWriter(profName+ "Height.txt");
+                    Writer wWeight = new FileWriter(profName+ "Weight.txt");
+                    Writer wExercise = new FileWriter(profName+ "Exercise.txt");
+                    Writer wCalories = new FileWriter(profName+ "Calories.txt");
+                    Writer wDate = new FileWriter(profName+ "Date.txt");
+
+                    for(int j = 0; j < dateList.size(); j++)
+                    {
+                        wHeight.write("\n");
+                        wHeight.write(heightList.get(j));
+
+                        wWeight.write("\n");
+                        wWeight.write(weightList.get(j));
+
+                        wExercise.write("\n");
+                        wExercise.write(exerciseList.get(j));
+
+                        wCalories.write("\n");
+                        wCalories.write(calList.get(j));
+
+                        wDate.write("\n");
+                        wDate.write(dateList.get(j));
+
+                        dateBtn.setVisible(false);
+                    }
+
+                    wHeight.close();
+                    wWeight.close();
+                    wExercise.close();
+                    wCalories.close();
+                    wDate.close();
+
+                    heightText.setText("");
+                    weightText.setText("");
+                    exText.setText("");
+                    calText.setText("");
+                    BMIText.setText("");
+
+
+
+
+                } catch (Exception e1) {
+                    System.out.println("error in writing or reading into arraylist");
+                }
+            });
 
             // When the dateBtn is clicked...
             dateBtn.setOnAction(event ->
@@ -140,7 +197,6 @@ public class ViewInfo {
                 // the user is at at that date (eg. Underweight, Normal, Overweight, etc.)
                 BMI bmi = new BMI(Double.parseDouble(heightText.getText()),Double.parseDouble(weightText.getText()));
                 BMIText.setText((Double.parseDouble(decimal.format(bmi.getBMI()))) + " (" + bmi.getHealth() + ")");
-
             });
         }
 

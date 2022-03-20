@@ -35,8 +35,8 @@ public class LoginSystem {
         createAccountRoot.setCenter(createAccountGrid);
 
 // Makes the welcomeScene, the loginScene, and the createAccountScene
-        Scene welcomeScene = new Scene(borderRoot,400,400);
-        Scene loginScene = new Scene(loginRoot,450,400);
+        Scene welcomeScene = new Scene(borderRoot,600,400);
+        Scene loginScene = new Scene(loginRoot,600,400);
         Scene createAccountScene = new Scene(createAccountRoot,600,400);
 
 // Sets the grid inside the center of the BorderPane
@@ -153,6 +153,10 @@ public class LoginSystem {
                 else if(userStr.contains(createUsername.getText()))
                 {
                     errorInCreateAccount.setText("This username has already been taken");
+                    errorInCreateAccount.setTextFill(Color.web("FF0000"));
+                }
+                else if(createAccountPasswordField.getLength() <= 5){
+                    errorInCreateAccount.setText("Password must be longer than 5 characters");
                     errorInCreateAccount.setTextFill(Color.web("FF0000"));
                 }
                 else {
